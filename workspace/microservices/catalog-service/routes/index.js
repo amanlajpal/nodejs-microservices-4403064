@@ -9,47 +9,56 @@ router.get("/items", async (req, res) => {
     return res.json(items);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal Server error!" })
+    return res.status(500).json({ error: "Internal Server error" })
   }
 })
 
 router.get("/items/:id", async (req, res) => {
   try {
     const item = await CatalogService.getOne(req.params.id);
+    if (!item) {
+      return res.status(404).json({ error: "Item not found." })
+    }
     return res.json(item);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal Server error!" })
+    return res.status(500).json({ error: "Internal Server error" })
   }
 })
 
 router.post("/items", async (req, res) => {
   try {
-    const item = await CatalogService.create(req.body);
-    return res.json(item);
+    const newItem = await CatalogService.create(req.body);
+    return res.json(newItem);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal Server error!" })
+    return res.status(500).json({ error: "Internal Server error" })
   }
 })
 
 router.put("/items/:id", async (req, res) => {
   try {
-    const item = await CatalogService.update(req.params.id, req.body);
-    return res.json(item);
+    const updatedItem = await CatalogService.update(req.params.id, req.body);
+    if (!updatedItem) {
+      return res.status(404).json({ error: "Item not found." })
+    }
+    return res.json(updatedItem);
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal Server error!" })
+    return res.status(500).json({ error: "Internal Server error" })
   }
 })
 
 router.delete("/items/:id", async (req, res) => {
   try {
-    const item = await CatalogService.delete(req.params.id);
-    return res.json(item);
+    const deletionResult = await CatalogService.remove(req.params.id);
+    if (deletionResult.deletedCount === 0) {
+      return res.status(404).json({ error: "Item not found." })
+    }
+    return res.status(204).send();
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal Server error!" })
+    return res.status(500).json({ error: "Internal Server error" })
   }
 })
 
