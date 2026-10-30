@@ -1,6 +1,6 @@
 // Import necessary modules
 const express = require("express");
-const CatalogService = require("../../../services/CatalogService");
+const CatalogService = require("../../../services/CatalogClient");
 
 // Create a new Express router
 const router = express.Router();
@@ -55,9 +55,8 @@ router.post("/", async (req, res) => {
     // Provide feedback
     req.session.messages.push({
       type: "success",
-      text: `The item was ${
-        req.body.itemId ? "updated" : "created"
-      } successfully!`
+      text: `The item was ${req.body.itemId ? "updated" : "created"
+        } successfully!`
     });
     return res.redirect("/admin/item");
   } catch (err) {
