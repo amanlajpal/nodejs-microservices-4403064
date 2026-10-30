@@ -5,7 +5,7 @@ class ServiceClient {
     static async getService(servicename) {
         try {
             const response = await axios.get(
-                `http://${config.registry.url}/find/${servicename}/${config.registry.version}`
+                `${config.registry.url}/find/${servicename}/${config.registry.version}`
             )
             if (!response.data.ip) {
                 throw new Error(`Could not find ${servicename}:${config.registry.version}`);
@@ -20,10 +20,10 @@ class ServiceClient {
 
     static async callService(servicename, requestOptions) {
         try {
-            const { ip, port } = this.getService(servicename);
+            const { ip, port } = await this.getService(servicename);
             // eslint-disable-next-line no-param-reassign
             requestOptions.url = `http://${ip}:${port}${requestOptions.url}`;
-            const response = await axios.get(requestOptions)
+            const response = await axios.request(requestOptions)
             return response.data;
         }
         catch (error) {

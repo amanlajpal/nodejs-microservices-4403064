@@ -25,7 +25,7 @@ class Registry {
             return key;
         }
         this.services[key].timestamp = Math.floor(new Date / 1000);
-        console.log(`Added Service ${name}, ${version} at ${ip}:${port}`)
+        console.log(`Updated Service ${name}, ${version} at ${ip}:${port}`)
         return key;
     }
 
