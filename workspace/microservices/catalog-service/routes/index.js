@@ -3,10 +3,14 @@ const CatalogService = require("../lib/CatalogService");
 
 const router = express.Router();
 
+function createResponse(item) {
+  return { id: item._id, sku: item.sku, name: item.name, price: item.price }
+}
+
 router.get("/items", async (req, res) => {
   try {
     const items = await CatalogService.getAll();
-    return res.json(items);
+    return res.json(items.map(createResponse));
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server error" })
@@ -19,7 +23,7 @@ router.get("/items/:id", async (req, res) => {
     if (!item) {
       return res.status(404).json({ error: "Item not found." })
     }
-    return res.json(item);
+    return res.json(createResponse(item));
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server error" })
@@ -29,7 +33,7 @@ router.get("/items/:id", async (req, res) => {
 router.post("/items", async (req, res) => {
   try {
     const newItem = await CatalogService.create(req.body);
-    return res.json(newItem);
+    return res.json(createResponse(newItem));
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server error" })
@@ -42,7 +46,7 @@ router.put("/items/:id", async (req, res) => {
     if (!updatedItem) {
       return res.status(404).json({ error: "Item not found." })
     }
-    return res.json(updatedItem);
+    return res.json(createResponse(updatedItem));
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server error" })
