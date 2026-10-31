@@ -1,6 +1,6 @@
 // Import necessary modules
 const express = require("express");
-const UserService = require("../../../services/UserService");
+const UserService = require("../../../services/UserServiceClient");
 
 // Create a new Express router
 const router = express.Router();
@@ -8,12 +8,17 @@ const router = express.Router();
 // Route for getting all users or a specific user by ID
 router.get("/:userId?", async (req, res, next) => {
   try {
-    const users = await UserService.getAll(); // Get all users
-
     let user = null;
-    // The optional userId param was passed
-    if (req.params.userId) {
-      user = await UserService.getOne(req.params.userId); // Get specific user
+    let users = [];
+    try {
+      users = await UserService.getAll(); // Get all users
+
+      // The optional userId param was passed
+      if (req.params.userId) {
+        user = await UserService.getOne(req.params.userId); // Get specific user
+      }
+    } catch (error) {
+      console.error(error);
     }
 
     // Render the user page with all users or the specific user
@@ -63,9 +68,8 @@ router.post("/", async (req, res) => {
 
     req.session.messages.push({
       type: "success",
-      text: `The user was ${
-        req.body.userId ? "updated" : "created"
-      } successfully!`
+      text: `The user was ${req.body.userId ? "updated" : "created"
+        } successfully!`
     });
 
     // Redirect to the user page
