@@ -9,7 +9,12 @@ const router = express.Router();
 router.get("/", async (req, res, next) => {
   try {
     // Use the OrderService to get all orders
-    const orders = await OrderService.getAll();
+    let orders = [];
+    try {
+      orders = await OrderService.getAll();
+    } catch (error) {
+      console.error(error);
+    }
 
     // Render the admin orders page with the orders data
     return res.render("admin/orders", { orders });
